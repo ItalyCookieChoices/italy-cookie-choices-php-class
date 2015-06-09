@@ -160,12 +160,6 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     $button_text = ( isset( $this->options['button_text'] ) ) ? $this->options['button_text'] : '' ;
 
                     /**
-                     * Checkbox for third part cookie in all page (except head and footer)
-                     * @var bol
-                     */
-                    $block_body = ( isset( $this->options['block_body'] ) ) ? $this->options['block_body'] : '' ;
-
-                    /**
                      * Checkbox custom scripts block
                      * @var bol
                      */
@@ -190,9 +184,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                      */
                     $this->valore = '<div class="el"><div style="padding:10px;margin-bottom: 18px;color:'.$this->esc_attr( $banner_text_color ).';background-color:' . $this->esc_attr( $banner_bg ) . ';text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);">' . $this->esc_attr( $content_message_text ) . '&nbsp;&nbsp;<button onclick="cookieChoices.removeCookieConsent()" style="color: '.$this->esc_attr( $banner_text_color ).';padding: 3px;font-size: 12px;line-height: 12px;text-decoration: none;text-transform: uppercase;margin:0;display: inline-block;font-weight: normal; text-align: center;  vertical-align: middle;  cursor: pointer;  border: 1px solid ' . $this->esc_attr( $banner_text_color ) . ';background: rgba(255, 255, 255, 0.03);">' . $this->esc_attr( $content_message_button_text ) . '</button></div><cookie></div>';
 
-                    if ( $block_body ) {
-                        ob_start(array($this, 'block'));
-                    }
+                    ob_start(array($this, 'block'));
 
                 //}
             }
@@ -209,6 +201,12 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
 
         public function block($buffer, $phase) {
 
+            /**
+             * Checkbox for third part cookie in all page (except head and footer)
+             * @var bol
+             */
+            $block_body = ( isset( $this->options['block_body'] ) ) ? $this->options['block_body'] : '' ;
+
             $block_body_scripts_exclude = ( isset( $this->options['block_body_scripts_exclude'] ) ) ? $this->options['block_body_scripts_exclude'] : '' ;
             $block_head_scripts_include = ( isset( $this->options['block_head_scripts_include'] ) ) ? $this->options['block_head_scripts_include'] : '' ;
 
@@ -223,12 +221,14 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                 $end_body = $matches[5];
                 $after_body = $matches[6];
 
-                preg_match_all( $this->pattern, $body, $body_matches);
-                if ( !empty( $body_matches[0] ) ) {
-                    foreach($body_matches[0] AS $k => $v) {
-                        if(!$this->in_array_match(trim($v), $block_body_scripts_exclude)) {
-                            $body = preg_replace('#'.str_replace("/", "\/", trim($body_matches[0][$k])).'#is', $this->valore, $body);
-                            $this->js_array[] = trim($v);
+                if ( $block_body ) {
+                    preg_match_all( $this->pattern, $body, $body_matches);
+                    if ( !empty( $body_matches[0] ) ) {
+                        foreach($body_matches[0] AS $k => $v) {
+                            if(!$this->in_array_match(trim($v), $block_body_scripts_exclude)) {
+                                $body = preg_replace('#'.str_replace("/", "\/", trim($body_matches[0][$k])).'#is', $this->valore, $body);
+                                $this->js_array[] = trim($v);
+                            }
                         }
                     }
                 }
