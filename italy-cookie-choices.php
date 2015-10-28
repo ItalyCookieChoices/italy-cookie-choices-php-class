@@ -228,7 +228,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     if ( !empty( $body_matches[0] ) ) {
                         foreach($body_matches[0] AS $k => $v) {
                             if(!$this->in_array_match(trim($v), $block_body_scripts_exclude)) {
-                                $body = preg_replace('#'.str_replace("/", "\/", trim($body_matches[0][$k])).'#is', $this->valore, $body);
+                                $body = preg_replace('#'.preg_quote(trim($v), '#').'#is', $this->valore, $body);
                                 $this->js_array[] = trim($v);
                             }
                         }
