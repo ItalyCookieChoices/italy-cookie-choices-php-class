@@ -194,7 +194,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
 
         private function in_array_match($value, $array) {
             foreach($array as $k=>$v) {
-                if(preg_match('#'.$v.'#is', $value)) {
+                if(preg_match('#'.preg_quote($v, '#').'#is', $value)) {
                     return true;
                 }
             }
