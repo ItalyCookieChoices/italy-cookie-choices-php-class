@@ -127,7 +127,9 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     //if the cookie is not already set
                     (!isset( $_COOKIE[ $this->options['cookie_name'] ] )) && 
                     //if the referer is in the same domain
-                    (parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)==$_SERVER['HTTP_HOST'])
+                    (parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)==$_SERVER['HTTP_HOST']) &&
+					//if the secondView option is set
+					($this->options['secondView'])
                 ) {
                     setcookie($this->options['cookie_name'], $this->options['cookie_value'], time()+(3600*24*365), '/');
                     $secondView = true;
