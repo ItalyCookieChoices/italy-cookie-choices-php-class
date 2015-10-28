@@ -268,17 +268,17 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
             /**
              * Select what kind of banner to display
              */
-            if ( $this->options['banner'] === '1' || !empty( $this->options['slug'] ) ){
+            if ( $this->options['banner'] === 1 || !empty( $this->options['slug'] ) ){
 
                 $banner = 'Bar'; 
                 $bPos = 'top:0';
 
-            } elseif ( $this->options['banner'] === '2' ) {
+            } elseif ( $this->options['banner'] === 2 ) {
 
                 $banner = 'Dialog';
                 $bPos = 'top:0';
 
-            } elseif ( $this->options['banner'] === '3' ) {
+            } elseif ( $this->options['banner'] === 3 ) {
 
                 $banner = 'Bar'; 
                 $bPos = 'bottom:0';
