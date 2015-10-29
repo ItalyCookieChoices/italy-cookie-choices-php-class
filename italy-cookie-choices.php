@@ -194,7 +194,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
 
         private function in_array_match($value, $array) {
             foreach($array as $k=>$v) {
-                if(preg_match('#'.preg_quote($v, '#').'#is', $value)) {
+                if(preg_match('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(preg_replace( "/([\r|\n]*)/is", "", trim($v)), '/')).'/is', preg_replace( "/([\r|\n]*)/is", "", $value))) {
                     return true;
                 }
             }
@@ -228,7 +228,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     if ( !empty( $body_matches[0] ) ) {
                         foreach($body_matches[0] AS $k => $v) {
                             if(!$this->in_array_match(trim($v), $block_body_scripts_exclude)) {
-                                $body = preg_replace('#'.preg_quote(trim($v), '#').'#is', $this->valore, $body);
+                                $body = preg_replace('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(trim($v), '/')).'/is', $this->valore, $body);
                                 $this->js_array[] = trim($v);
                             }
                         }
@@ -236,11 +236,11 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                 }
 
                 foreach($block_head_scripts_include AS $single_script) {
-                    preg_match_all('#'.str_replace("/", "\/", trim($single_script)).'#is', $head, $matches);
+					preg_match_all('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(trim($single_script), '/')).'/is', $head, $matches);
                     if(!empty($matches[0])) {
                         foreach($matches[0] AS $v) {
                             $head = str_replace(trim($v), "<!-- removed head from Italy Cookie Choices PHP Class -->", $head);
-                            $this->js_array[] = trim($single_script);
+                            $this->js_array[] = trim($v);
                         }
                     }
                 }
