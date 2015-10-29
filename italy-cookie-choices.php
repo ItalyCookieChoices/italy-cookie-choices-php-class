@@ -127,7 +127,9 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     //if the cookie is not already set
                     (!isset( $_COOKIE[ $this->options['cookie_name'] ] )) && 
                     //if the referer is in the same domain
-                    (parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)==$_SERVER['HTTP_HOST'])
+                    (parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)==$_SERVER['HTTP_HOST']) &&
+                    //if the secondView option is set
+                    ($this->options['secondView'])
                 ) {
                     setcookie($this->options['cookie_name'], $this->options['cookie_value'], time()+(3600*24*365), '/');
                     $secondView = true;
@@ -192,7 +194,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
 
         private function in_array_match($value, $array) {
             foreach($array as $k=>$v) {
-                if(preg_match('#'.$v.'#is', $value)) {
+                if(preg_match('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(preg_replace( "/([\r|\n]*)/is", "", trim($v)), '/')).'/is', preg_replace( "/([\r|\n]*)/is", "", $value))) {
                     return true;
                 }
             }
@@ -226,7 +228,7 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                     if ( !empty( $body_matches[0] ) ) {
                         foreach($body_matches[0] AS $k => $v) {
                             if(!$this->in_array_match(trim($v), $block_body_scripts_exclude)) {
-                                $body = preg_replace('#'.str_replace("/", "\/", trim($body_matches[0][$k])).'#is', $this->valore, $body);
+                                $body = preg_replace('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(trim($v), '/')).'/is', $this->valore, $body);
                                 $this->js_array[] = trim($v);
                             }
                         }
@@ -234,11 +236,11 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
                 }
 
                 foreach($block_head_scripts_include AS $single_script) {
-                    preg_match_all('#'.str_replace("/", "\/", trim($single_script)).'#is', $head, $matches);
+					preg_match_all('/'.str_replace(preg_quote("<---------SOMETHING--------->"), ".*", preg_quote(trim($single_script), '/')).'/is', $head, $matches);
                     if(!empty($matches[0])) {
                         foreach($matches[0] AS $v) {
                             $head = str_replace(trim($v), "<!-- removed head from Italy Cookie Choices PHP Class -->", $head);
-                            $this->js_array[] = trim($single_script);
+                            $this->js_array[] = trim($v);
                         }
                     }
                 }
@@ -266,17 +268,17 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
             /**
              * Select what kind of banner to display
              */
-            if ( $this->options['banner'] === '1' || !empty( $this->options['slug'] ) ){
+            if ( $this->options['banner'] === 1 || !empty( $this->options['slug'] ) ){
 
                 $banner = 'Bar'; 
                 $bPos = 'top:0';
 
-            } elseif ( $this->options['banner'] === '2' ) {
+            } elseif ( $this->options['banner'] === 2 ) {
 
                 $banner = 'Dialog';
                 $bPos = 'top:0';
 
-            } elseif ( $this->options['banner'] === '3' ) {
+            } elseif ( $this->options['banner'] === 3 ) {
 
                 $banner = 'Bar'; 
                 $bPos = 'bottom:0';
@@ -374,13 +376,13 @@ if ( !class_exists( 'Italy_Cookie_Choices' ) ){
              * var btcB = Colore del font della topbar/dialog
              * @var string
              */
-            $jsVariables = 'var coNA="' . $cookie_name . '",coVA="' . $cookie_value . '";scroll="' . $scroll . '",elPos="fixed",infoClass="",closeClass="",htmlM="' . $htmlM . '",rel="' . $reload . '",tar="' . $target . '",bgB="' . $banner_bg . '",btcB="' . $banner_text_color . '",bPos="' . $bPos . '",jsArr = ' . $this->wp_json_encode( $this->js_array ) . ';';
+            $jsVariables = 'var coNA="' . $cookie_name . '",coVA="' . $cookie_value . '";scroll="' . $scroll . '",elPos="fixed",infoClass="cookieChoiceLink",closeClass="cookieChoiceDismiss",htmlM="' . $htmlM . '",rel="' . $reload . '",tar="' . $target . '",bgB="' . $banner_bg . '",btcB="' . $banner_text_color . '",bPos="' . $bPos . '",jsArr = ' . $this->wp_json_encode( $this->js_array ) . ';';
 
             /**
              * Noscript snippet in case browser has JavaScript disabled
              * @var string
              */
-            $noscript = '<noscript><style>html{margin-top:35px}</style><div id="cookieChoiceInfo" style="position:absolute;width:100%;margin:0px;left:0px;top:0px;padding:4px;z-index:9999;text-align:center;background-color:rgb(238, 238, 238);"><span>' . $this->wp_json_encode( $this->options['text'] ) . '</span><a href="' . ( $this->options['url'] ) . '" target="_blank" style="margin-left:8px;">' . $this->esc_js( $this->options['anchor_text'] ) . '</a><a id="cookieChoiceDismiss" href="#" style="margin-left:24px;display:none;">' . $this->esc_js( $this->options['button_text'] ) . '</a></div></div></noscript>';
+            $noscript = '<noscript><style>html{margin-top:35px}</style><div id="cookieChoiceInfo" style="position:absolute;width:100%;margin:0px;left:0px;top:0px;padding:4px;z-index:9999;text-align:center;background-color:rgb(238, 238, 238);"><span>' . $this->wp_json_encode( $this->options['text'] ) . '</span><a id="cookieChoiceLink" class="cookieChoiceLink" href="' . ( $this->options['url'] ) . '" target="_blank" style="margin-left:8px;">' . $this->esc_js( $this->options['anchor_text'] ) . '</a><a id="cookieChoiceDismiss" class="cookieChoiceDismiss" href="#" style="margin-left:24px;display:none;">' . $this->esc_js( $this->options['button_text'] ) . '</a></div></div></noscript>';
 
             /**
              * Select wich file to use in debug mode

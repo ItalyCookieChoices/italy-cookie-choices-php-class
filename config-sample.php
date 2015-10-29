@@ -169,32 +169,32 @@ return array(
 	 * Script to exclude from block
 	 * List of scripts to be excluded from the block
 	 *
-	 * Accepted values: Array stings
+	 * Accepted values: Array of strings
 	 *
-	 * Accept string o regular expression
+	 * Accept string (use <---------SOMETHING---------> as wildcard)
 	 * For example:
 	 * '<script src="/js/myspecial.js"></script>', // only script
-	 * '<script src="/js/.*?"></script>', // all scripts in /js/
+	 * '<script src="/js/<---------SOMETHING--------->"></script>', // all scripts in /js/
 	 */
 	'block_body_scripts_exclude'=> array(
 		//'<script src="/js/myspecial.js"></script>', // only script
-	 	//'<script src="/js/.*?"></script>', // all scripts in /js/
+	 	//'<script src="/js/<---------SOMETHING--------->"></script>', // all scripts in /js/
 	),
 
 	/*
 	 * Script to block in the head section
 	 * List of scripts to block in head section
 	 *
-	 * Accepted values: Array stings
+	 * Accepted values: Array of strings
 	 *
-	 * Accept string o regular expression
+	 * Accept string (use <---------SOMETHING---------> as wildcard)
 	 * For example:
 	 * '<script src="/js/myspecial.js"></script>', // only script
-	 * '<script src="/js/.*?"></script>', // all scripts in /js/
+	 * '<script src="/js/<---------SOMETHING--------->"></script>', // all scripts in /js/
 	 */
 	'block_head_scripts_include'=> array(
 		//'<script src="/js/myspecial.js"></script>', // only script
-	 	//'<script src="/js/.*?"></script>', // all scripts in /js/
+	 	//'<script src="/js/<---------SOMETHING--------->"></script>', // all scripts in /js/
 	),
 );
 ?>
